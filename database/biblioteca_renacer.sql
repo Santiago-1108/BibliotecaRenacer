@@ -1,9 +1,11 @@
 -- Base de datos: `biblioteca_renacer`
---
+DROP DATABASE IF EXISTS biblioteca_renacer;
 
--- --------------------------------------------------------
+-- Crear la base de datos
+CREATE DATABASE biblioteca_renacer;
 
---
+-- Usar la base de datos recién creada
+USE biblioteca_renacer;
 -- Estructura de tabla para la tabla `administrators`
 --
 
@@ -95,11 +97,7 @@ CREATE TABLE `students` (
 INSERT INTO `students` (`id`, `name`, `identification`, `address`, `grade`, `created_at`) VALUES
 (16, 'eyner santiago casso beavides', '1059236474', 'Calle 98 #76-54', 1, '2025-06-17 22:50:27');
 
---
--- Índices para tablas volcadas
---
 
---
 -- Indices de la tabla `administrators`
 --
 ALTER TABLE `administrators`
