@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Renacer - Portal Estudiante</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="../img/logo.png" type="image/x-icon" /> 
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="user-details">
+                    <h3 id="studentName">Estudiante</h3>
+                    <p id="studentGrade">Grado</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active" data-page="catalog">
+                        <i class="fas fa-book"></i> Catálogo
+                    </li>
+                    <li data-page="myLoans">
+                        <i class="fas fa-hand-holding-heart"></i> Mis Préstamos
+                    </li>
+                    <li data-page="account">
+                        <i class="fas fa-user"></i> Mi Cuenta
+                    </li>
+                    <li id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Catalog Page -->
+            <div class="page" id="catalog">
+                <h1>Catálogo de Libros</h1>
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="catalogSearch" placeholder="Buscar libros...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="filter-options">
+                        <select id="catalogCategoryFilter">
+                            <option value="">Todas las categorías</option>
+                            <option value="niños">Niños</option>
+                            <option value="matematicas">Matemáticas</option>
+                            <option value="español">Español</option>
+                            <option value="sociales">Sociales</option>
+                            <option value="culturales">Culturales</option>
+                            <option value="quimica">Química</option>
+                            <option value="fisica">Física</option>
+                            <option value="deportes">Deportes</option>
+                            <option value="cuentos">Cuentos</option>
+                            <option value="ciencias">Ciencias Naturales</option>
+                            <option value="ingles">Inglés</option>
+                            <option value="religion">Religión</option>
+                            <option value="etica">Ética y Valores</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="books-grid" id="booksGrid">
+                    <!-- Books will be loaded here -->
+                </div>
+            </div>
+
+            <!-- My Loans Page -->
+            <div class="page" id="myLoans" style="display: none;">
+                <h1>Mis Préstamos</h1>
+                <div class="loans-summary">
+                    <div class="loan-stat">
+                        <i class="fas fa-book"></i>
+                        <div>
+                            <h3 id="activeLoansCount">0</h3>
+                            <p>Préstamos Activos</p>
+                        </div>
+                    </div>
+                    <div class="loan-stat">
+                        <i class="fas fa-history"></i>
+                        <div>
+                            <h3 id="historyLoansCount">0</h3>
+                            <p>Historial Total</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <h2>Préstamos Activos</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Libro</th>
+                                <th>Fecha Préstamo</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activeLoansTable">
+                            <!-- Active loans will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-container">
+                    <h2>Historial de Préstamos</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Libro</th>
+                                <th>Fecha Préstamo</th>
+                                <th>Fecha Devolución</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loansHistoryTable">
+                            <!-- Loan history will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Account Page -->
+            <div class="page" id="account" style="display: none;">
+                <h1>Mi Cuenta</h1>
+                <div class="account-info">
+                    <div class="info-card">
+                        <h2>Información Personal</h2>
+                        <div class="info-item">
+                            <span class="label">Nombre:</span>
+                            <span id="accountName" class="value"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Identificación:</span>
+                            <span id="accountId" class="value"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Grado:</span>
+                            <span id="accountGrade" class="value"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Dirección:</span>
+                            <span id="accountAddress" class="value"></span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h2>Resumen de Préstamos</h2>
+                        <div class="info-item">
+                            <span class="label">Libros Prestados:</span>
+                            <span id="accountActiveLoans" class="value"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Historial Total:</span>
+                            <span id="accountTotalLoans" class="value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODIFICADO: Book Detail Modal con imagen -->
+    <div id="bookDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="book-detail">
+                <!-- NUEVO: Contenido del modal reorganizado con imagen -->
+                <div class="book-detail-content">
+                    <!-- NUEVO: Contenedor de imagen -->
+                    <div class="book-image-container">
+                        <img id="detailBookImage" src="" alt="Portada del libro" class="book-detail-image"
+                            style="display: none;">
+                    </div>
+
+                    <!-- MODIFICADO: Información del libro reorganizada -->
+                    <div class="book-info-container">
+                        <h2 id="detailTitle"></h2>
+                        <div class="book-info">
+                            <p><strong>Autor:</strong> <span id="detailAuthor"></span></p>
+                            <p><strong>Editorial:</strong> <span id="detailPublisher"></span></p>
+                            <p><strong>Categoría:</strong> <span id="detailCategory"></span></p>
+                            <p><strong>Disponibles:</strong> <span id="detailAvailable"></span></p>
+                            <p><strong>Estado:</strong> <span id="detailCondition"></span></p>
+                        </div>
+                    </div>
+                </div>
+                  <!-- MODIFICADO: Resumen del libro -->
+                        <div class="book-summary">
+                            <h3>Resumen</h3>
+                            <p id="detailSummary"></p>
+                        </div>
+
+                <div class="form-actions" style="margin-top: 20px; text-align: center;">
+                    <button class="btn-secondary close-modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/student.js"></script>
+</body>
+
+</html>

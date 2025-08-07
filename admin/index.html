@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Renacer - Panel Administrador</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="../img/logo.png" type="image/x-icon" />
+    <style>
+        /* Estilos adicionales para Google Books integration */
+        .google-book-result {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            gap: 10px;
+            transition: background-color 0.2s;
+        }
+        .google-book-result:hover {
+            background-color: #f0f8ff !important;
+            border-color: #007bff !important;
+        }
+        .manual-option {
+            border: 2px dashed #007bff;
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            color: #007bff;
+            transition: background-color 0.2s;
+        }
+        .manual-option:hover {
+            background-color: #e3f2fd;
+        }
+        .book-preview {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .search-button {
+            padding: 8px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .search-button:hover {
+          background: #218838 !important;
+          transform: translateY(-1px);
+        }
+
+        .search-button:disabled {
+          background: #6c757d !important;
+          cursor: not-allowed !important;
+          transform: none !important;
+        }
+        .search-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .title-search-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .title-search-container input {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-details">
+                    <h3 id="adminName">Administrador</h3>
+                    <p>Biblioteca Renacer</p>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active" data-page="dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </li>
+                    <li data-page="books">
+                        <i class="fas fa-book"></i> Libros
+                    </li>
+                    <li data-page="students">
+                        <i class="fas fa-user-graduate"></i> Estudiantes
+                    </li>
+                    <li data-page="loans">
+                        <i class="fas fa-hand-holding-heart"></i> Préstamos
+                    </li>
+                    <li data-page="returns">
+                        <i class="fas fa-undo"></i> Devoluciones
+                    </li>
+                    <li data-page="reports">
+                        <i class="fas fa-file-alt"></i> Reportes
+                    </li>
+                    <li id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page" id="dashboard">
+                <h1>Dashboard</h1>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon books">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalBooks">0</h3>
+                            <p>Total Libros</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon students">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalStudents">0</h3>
+                            <p>Estudiantes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon loans">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="activeLoans">0</h3>
+                            <p>Préstamos Activos</p>
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="recent-activity">
+                    <h2>Actividad Reciente</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th>
+                                <th>Libro</th>
+                                <th>Acción</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentActivityTable">
+                            <!-- Activity data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Books Page -->
+            <div class="page" id="books" style="display: none;">
+                <div class="page-header">
+                    <h1>Gestión de Libros</h1>
+                    <button id="addBookBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Agregar Libro
+                    </button>
+                </div>
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="bookSearch" placeholder="Buscar libros...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="filter-options">
+                        <select id="categoryFilter">
+                            <option value="">Todas las categorías</option>
+                            <option value="niños">Niños</option>
+                            <option value="matematicas">Matemáticas</option>
+                            <option value="español">Español</option>
+                            <option value="sociales">Sociales</option>
+                            <option value="culturales">Culturales</option>
+                            <option value="quimica">Química</option>
+                            <option value="fisica">Física</option>
+                            <option value="deportes">Deportes</option>
+                            <option value="cuentos">Cuentos</option>
+                            <option value="ciencias">Ciencias Naturales</option>
+                            <option value="ingles">Inglés</option>
+                            <option value="religion">Religión</option>
+                            <option value="etica">Ética y Valores</option>
+                            <option value="enciclopedias">Enciclopedias</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Editorial</th>
+                                <th>Categoría</th>
+                                <th>Cantidad</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTable">
+                            <!-- Books data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Students Page -->
+            <div class="page" id="students" style="display: none;">
+                <div class="page-header">
+                    <h1>Gestión de Estudiantes</h1>
+                    <button id="addStudentBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Agregar Estudiante
+                    </button>
+                </div>
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="studentSearch" placeholder="Buscar estudiantes...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="filter-options">
+                        <select id="gradeFilter">
+                            <option value="">Todos los grados</option>
+                            <option value="1">1°</option>
+                            <option value="2">2°</option>
+                            <option value="3">3°</option>
+                            <option value="4">4°</option>
+                            <option value="5">5°</option>
+                            <option value="6">6°</option>
+                            <option value="7">7°</option>
+                            <option value="8">8°</option>
+                            <option value="9">9°</option>
+                            <option value="10">10°</option>
+                            <option value="11">11°</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Identificación</th>
+                                <th>Grado</th>
+                                <th>Dirección</th>
+                                <th>Libros Prestados</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTable">
+                            <!-- Students data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Loans Page -->
+            <div class="page" id="loans" style="display: none;">
+                <div class="page-header">
+                    <h1>Gestión de Préstamos</h1>
+                    <button id="newLoanBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Nuevo Préstamo
+                    </button>
+                </div>
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="loanSearch" placeholder="Buscar préstamos...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Identificación</th>
+                                <th>Estudiante</th>
+                                <th>Libro</th>
+                                <th>Fecha Préstamo</th>
+                                <th>Fecha Devolución</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loansTable">
+                            <!-- Loans data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Returns Page -->
+            <div class="page" id="returns" style="display: none;">
+                <div class="page-header">
+                    <h1>Registro de Devoluciones</h1>
+                </div>
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="returnSearch" placeholder="Buscar por estudiante o libro...">
+                        <button><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Préstamo</th>
+                                <th>Estudiante</th>
+                                <th>Libro</th>
+                                <th>Fecha Préstamo</th>
+                                <th>Fecha Devolución</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="returnsTable">
+                            <!-- Returns data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <div class="page" id="reports" style="display: none;">
+                <h1>Reportes</h1>
+                <div class="reports-container">
+                    <div class="report-card" id="pendingReturnsReport">
+                        <h3>Estudiantes con Libros Pendientes</h3>
+                        <p>Generar listado de estudiantes que aún no han devuelto libros</p>
+                        <button class="btn-secondary">Generar Reporte</button>
+                    </div>
+                    <div class="report-card" id="bookInventoryReport">
+                        <h3>Inventario de Libros</h3>
+                        <p>Reporte completo del inventario de libros por categoría</p>
+                        <button class="btn-secondary">Generar Reporte</button>
+                    </div>
+                
+                    <div class="report-card" id="loanHistoryReport">
+                        <h3>Historial de Préstamos</h3>
+                        <p>Historial completo de préstamos por período</p>
+                        <button class="btn-secondary">Generar Reporte</button>
+                    </div>
+                </div>
+                <div id="reportResult" class="report-result">
+                    <!-- Report results will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing books -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="bookModalTitle">Agregar Nuevo Libro</h2>
+            <form id="bookForm">
+                <input type="hidden" id="bookId">
+                
+                <!-- MODIFICADO: Campo de título con botón de búsqueda -->
+                <div class="form-group">
+                    <label for="bookTitle">Título del Libro</label>
+                    <div class="title-search-container">
+                        <input type="text" id="bookTitle" required placeholder="Buscar título/autor...">
+                        <button type="button" id="searchBooksBtn" class="search-button">
+                            <i class="fas fa-search"></i> Buscar </button>
+                    </div>
+                </div>
+
+                <!-- NUEVO: Contenedor para resultados de Google Books -->
+                <div id="googleBooksResults" style="display: none; max-height: 300px; overflow-y: auto; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; padding: 10px; background: white;">
+                    <!-- Los resultados de Google Books aparecerán aquí -->
+                </div>
+
+                <!-- NUEVO: Contenedor para vista previa del libro -->
+                <div id="bookPreviewContainer" style="display: none; margin: 15px 0;">
+                    <!-- La vista previa del libro aparecerá aquí -->
+                </div>
+
+                <!-- NUEVO: Input oculto para carga manual de imagen -->
+                <input type="file" id="bookImageInput" accept="image/*" style="display: none;">
+
+                <div class="form-group">
+                    <label for="bookAuthor">Autor</label>
+                    <input type="text" id="bookAuthor" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookPublisher">Editorial</label>
+                    <input type="text" id="bookPublisher" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookCategory">Categoría</label>
+                    <select id="bookCategory" required>
+                        <option value="niños">Niños</option>
+                        <option value="matematicas">Matemáticas</option>
+                        <option value="español">Español</option>
+                        <option value="sociales">Sociales</option>
+                        <option value="culturales">Culturales</option>
+                        <option value="quimica">Química</option>
+                        <option value="fisica">Física</option>
+                        <option value="deportes">Deportes</option>
+                        <option value="cuentos">Cuentos</option>
+                        <option value="ciencias">Ciencias Naturales</option>
+                        <option value="ingles">Inglés</option>
+                        <option value="religion">Religión</option>
+                        <option value="etica">Ética y Valores</option>
+                        <option value="enciclopedias">Enciclopedias</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bookQuantity">Cantidad</label>
+                    <input type="number" id="bookQuantity" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookCondition">Estado</label>
+                    <select id="bookCondition" required>
+                        <option value="bueno">Bueno</option>
+                        <option value="regular">Regular</option>
+                        <option value="malo">Malo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bookSummary">Resumen</label>
+                    <textarea id="bookSummary" rows="4" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing students -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="studentModalTitle">Agregar Nuevo Estudiante</h2>
+            <form id="studentForm">
+                <input type="hidden" id="studentId">
+                <div class="form-group">
+                    <label for="studentName">Nombre Completo</label>
+                    <input type="text" id="studentName" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentIdentification">Identificación</label>
+                    <input type="text" id="studentIdentification" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentAddress">Dirección</label>
+                    <input type="text" id="studentAddress" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentGrade">Grado</label>
+                    <select id="studentGrade" required>
+                        <option value="1">1°</option>
+                        <option value="2">2°</option>
+                        <option value="3">3°</option>
+                        <option value="4">4°</option>
+                        <option value="5">5°</option>
+                        <option value="6">6°</option>
+                        <option value="7">7°</option>
+                        <option value="8">8°</option>
+                        <option value="9">9°</option>
+                        <option value="10">10°</option>
+                        <option value="11">11°</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for new loan -->
+    <div id="loanModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Registrar Nuevo Préstamo</h2>
+            <form id="loanForm">
+                <div class="form-group">
+                    <label for="loanStudent">Estudiante</label>
+                    <select id="loanStudent" required>
+                        <!-- Students will be loaded here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="loanBook">Libro</label>
+                    <select id="loanBook" required>
+                        <!-- Books will be loaded here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="loanDate">Fecha de Préstamo</label>
+                    <input type="date" id="loanDate" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Registrar Préstamo</button>
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for book return -->
+    <div id="returnModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Registrar Devolución</h2>
+            <form id="returnForm">
+                <input type="hidden" id="returnLoanId">
+                <div class="form-group">
+                    <label for="returnStudentName">Estudiante</label>
+                    <input type="text" id="returnStudentName" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="returnBookTitle">Libro</label>
+                    <input type="text" id="returnBookTitle" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="returnDate">Fecha de Devolución</label>
+                    <input type="date" id="returnDate" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Registrar Devolución</button>
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+</body>
+</html>
