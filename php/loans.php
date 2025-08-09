@@ -27,6 +27,7 @@ try {
                     FROM loans l
                     JOIN students s ON l.student_id = s.id
                     JOIN books b ON l.book_id = b.id
+                    WHERE l.status = 'active'
                     ORDER BY l.loan_date DESC
                 ");
                 echo json_encode($stmt->fetchAll());

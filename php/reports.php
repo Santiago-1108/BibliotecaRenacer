@@ -53,7 +53,11 @@ try {
                        b.title as 'Libro',
                        l.loan_date as 'Fecha Préstamo',
                        l.return_date as 'Fecha Devolución',
-                       l.status as 'Estado',
+                       CASE
+                           WHEN l.status = 'active' THEN 'Activo'
+                           WHEN l.status = 'returned' THEN 'Devuelto'
+                           ELSE 'Desconocido'
+                       END as 'Estado',
                        CASE 
                            WHEN l.return_date IS NULL THEN DATEDIFF(CURDATE(), l.loan_date)
                            ELSE DATEDIFF(l.return_date, l.loan_date)

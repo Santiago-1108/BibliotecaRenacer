@@ -3,7 +3,7 @@
 $host = 'localhost';
 $dbname = 'biblioteca_renacer';
 $username = 'root';
-$password = '1108';
+$password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
